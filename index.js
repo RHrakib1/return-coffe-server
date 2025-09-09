@@ -3,14 +3,12 @@ const cors = require('cors')
 const app = express()
 require('dotenv').config()
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 //midelware 
 app.use(express.json())
 app.use(cors())
-
-
 
 
 
@@ -33,10 +31,23 @@ async function run() {
         const database = client.db("again-firebase-database");
         const returncollectiondata = database.collection("firebase-database");
 
+        app.get('/returncoffee', async (req, res) => {
+            const cursor = returncollectiondata.find()
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
 
         app.post('/returncoffee', async (req, res) => {
             const newcoffeeadded = req.body
             const result = await returncollectiondata.insertOne(newcoffeeadded)
+            res.send(result)
+        })
+
+        app.delete('/returncoffee/:id', async (req, res) => {
+            const id = req.params.id;
+            const quary = { _id: new ObjectId(id) }
+            const result = await returncollectiondata.deleteOne(quary)
             res.send(result)
         })
 
