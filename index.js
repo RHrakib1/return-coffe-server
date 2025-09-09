@@ -31,7 +31,14 @@ async function run() {
         await client.connect();
 
         const database = client.db("again-firebase-database");
-        const sarbatcollectiondata = database.collection("firebase-database");
+        const returncollectiondata = database.collection("firebase-database");
+
+
+        app.post('/returncoffee', async (req, res) => {
+            const newcoffeeadded = req.body
+            const result = await returncollectiondata.insertOne(newcoffeeadded)
+            res.send(result)
+        })
 
 
         // Send a ping to confirm a successful connection
